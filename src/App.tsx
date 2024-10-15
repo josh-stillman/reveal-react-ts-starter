@@ -2,6 +2,11 @@ import { useEffect, useRef } from 'react';
 import Reveal from 'reveal.js';
 import 'reveal.js/dist/reveal.css';
 import 'reveal.js/dist/theme/black.css';
+import RevealMarkdown from 'reveal.js/plugin/markdown/markdown.esm';
+import RevealHighlight from 'reveal.js/plugin/highlight/highlight.esm';
+import RevealNotes from 'reveal.js/plugin/notes/notes.esm';
+
+import './App.css';
 
 function App() {
   const deckDivRef = useRef<HTMLDivElement>(null); // reference to deck container div
@@ -12,8 +17,11 @@ function App() {
     if (deckRef.current) return;
 
     deckRef.current = new Reveal(deckDivRef.current!, {
+      // other config oXptions
       transition: 'slide',
-      // other config options
+      hash: true,
+      // Learn about plugins: https://revealjs.com/plugins/
+      plugins: [RevealMarkdown, RevealHighlight, RevealNotes],
     });
 
     deckRef.current.initialize().then(() => {
