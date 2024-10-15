@@ -1,34 +1,49 @@
-import { useState } from 'react';
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
-import './App.css';
+import { useEffect, useRef } from 'react';
+import Reveal from 'reveal.js';
+import 'reveal.js/dist/reveal.css';
+import 'reveal.js/dist/theme/black.css';
 
 function App() {
-  const [count, setCount] = useState(0);
+  const deckDivRef = useRef<HTMLDivElement>(null); // reference to deck container div
+  const deckRef = useRef<Reveal.Api | null>(null); // reference to deck reveal instance
+
+  useEffect(() => {
+    // Prevents double initialization in strict mode
+    if (deckRef.current) return;
+
+    deckRef.current = new Reveal(deckDivRef.current!, {
+      transition: 'slide',
+      // other config options
+    });
+
+    deckRef.current.initialize().then(() => {
+      // good place for event handlers and plugin setups
+    });
+
+    return () => {
+      try {
+        if (deckRef.current) {
+          deckRef.current.destroy();
+          deckRef.current = null;
+        }
+      } catch {
+        console.warn('Reveal.js destroy call failed.');
+      }
+    };
+  }, []);
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank" rel="noreferrer">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    // Your presentation is sized based on the width and height of
+    // our parent element. Make sure the parent is not 0-height.
+    <div className="reveal" ref={deckDivRef}>
+      <div className="slides">
+        <section>Slide 1</section>
+        <section>Slide 2</section>
+        <section>
+          <h1>hello</h1>Slide 2
+        </section>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount(count => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    </div>
   );
 }
 
